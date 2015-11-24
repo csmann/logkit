@@ -19,9 +19,12 @@ import Foundation
 
 /// The main logging API for application code. An instance of this class distributes Log Entries to Endpoints for writing.
 public final class LXLogger {
+    
     /// The collection of Endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
 
+    // MARK: - Initializers
+    
     /**
     Initialize a Logger. Any Endpoints that fail initialization are discarded.
 
@@ -36,6 +39,8 @@ public final class LXLogger {
     public convenience init() {
         self.init(endpoints: [LXConsoleEndpoint()])
     }
+    
+    // MARK: - Logs
 
     /**
     Delivers Log Entries to Endpoints.
@@ -186,4 +191,13 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Critical, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
+    // MARK: - Clear Logs
+    
+    public func resetAllFiles() {
+        for endpoint: LXEndpoint in endpoints {
+            if let fileEndpoint: LXRotatingFileEndpoint = endpoint as? LXRotatingFileEndpoint {
+                fileEndpoint.resetCurrentFile()
+            }
+        }
+    }
 }
